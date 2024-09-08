@@ -3,7 +3,10 @@ package com.uvg.app.login
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
@@ -41,25 +44,25 @@ private fun LoginScreen(
     ) {
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logo_rm),
                 contentDescription = "Rick and Morty logo",
             )
+            
+            Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                modifier = Modifier.width(225.dp),
+                modifier = Modifier.fillMaxWidth(),
                 onClick = onLoginClick
             ) {
                 Text(text = "Entrar")
             }
         }
 
-        Text(
-            text = "Victor Pérez - 23731",
-            modifier = Modifier
-        )
+        Text(text = "Victor Pérez - 23731")
     }
 }
 

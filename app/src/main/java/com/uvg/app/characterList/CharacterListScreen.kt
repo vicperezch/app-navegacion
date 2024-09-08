@@ -2,10 +2,12 @@ package com.uvg.app.characterList
 
 import CharacterDb
 import Character
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -28,10 +30,22 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.uvg.app.ui.theme.AppTheme
 
+@Composable
+fun CharacterListRoute(
+    modifier: Modifier = Modifier,
+    onCharacterClick: (Int) -> Unit
+) {
+    CharacterListScreen(
+        modifier = modifier,
+        onCharacterClick = onCharacterClick
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CharacterListScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onCharacterClick: (Int) -> Unit
 ) {
     val characterDb = CharacterDb()
 
@@ -49,7 +63,10 @@ private fun CharacterListScreen(
         LazyColumn(verticalArrangement = Arrangement.Center) {
             items(characterDb.getAllCharacters()) {character ->
                 CharacterItem(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .clickable { onCharacterClick(character.id) },
                     character = character
                 )
             }
@@ -99,7 +116,10 @@ private fun CharacterItem(
 private fun CharacterListPreview() {
     AppTheme {
         Surface {
-            CharacterListScreen(modifier = Modifier.fillMaxSize())
+            CharacterListScreen(
+                modifier = Modifier.fillMaxSize(),
+                onCharacterClick = {}
+            )
         }
     }
 }

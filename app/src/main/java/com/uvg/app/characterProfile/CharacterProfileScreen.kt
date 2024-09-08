@@ -1,6 +1,7 @@
 package com.uvg.app.characterProfile
 
 import Character
+import CharacterDb
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.uvg.app.ui.theme.AppTheme
+
+@Composable
+fun CharacterProfileRoute(
+    modifier: Modifier = Modifier,
+    id: Int,
+    onNavigateBack: () -> Unit
+) {
+    val characterDb = CharacterDb()
+    CharacterProfileScreen(
+        modifier = modifier,
+        character = characterDb.getCharacterById(id),
+        onNavigateBack = onNavigateBack
+    )
+}
 
 @Composable
 private fun CharacterProfileScreen(
