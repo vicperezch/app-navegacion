@@ -12,14 +12,17 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.uvg.app.characterList.CharacterListDestination
-import com.uvg.app.characterList.characterListScreen
-import com.uvg.app.characterList.navigateToCharacterListScreen
-import com.uvg.app.characterProfile.CharacterProfileDestination
-import com.uvg.app.characterProfile.characterProfileScreen
-import com.uvg.app.characterProfile.navigateToCharacterProfileScreen
-import com.uvg.app.login.LoginDestination
-import com.uvg.app.login.loginScreen
+import com.uvg.app.navigation.MainDestination
+import com.uvg.app.navigation.mainScreen
+import com.uvg.app.navigation.navigateToMainScreen
+import com.uvg.app.ui.characterList.CharacterListDestination
+import com.uvg.app.ui.characterList.characterListScreen
+import com.uvg.app.ui.characterList.navigateToCharacterListScreen
+import com.uvg.app.ui.characterProfile.CharacterProfileDestination
+import com.uvg.app.ui.characterProfile.characterProfileScreen
+import com.uvg.app.ui.characterProfile.navigateToCharacterProfileScreen
+import com.uvg.app.ui.login.LoginDestination
+import com.uvg.app.ui.login.loginScreen
 import com.uvg.app.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
@@ -39,37 +42,13 @@ class MainActivity : ComponentActivity() {
                     ) {
                         loginScreen (
                             onLoginClick = {
-                                navController.navigateToCharacterListScreen(
-                                    destination = CharacterListDestination,
-                                    navOptions = navOptions {
-                                            popUpTo<LoginDestination>() {
-                                            inclusive = true
-                                        }
-                                    }
+                                navController.navigateToMainScreen(
+                                    destination = MainDestination
                                 )
                             }
                         )
 
-                        characterListScreen(
-                            onCharacterClick = { id ->
-                                navController.navigateToCharacterProfileScreen(
-                                    destination = CharacterProfileDestination(
-                                        characterId = id
-                                    )
-                                )
-                            }
-                        )
-
-                        characterProfileScreen(
-                            onNavigateBack = {
-                                navController.navigateToCharacterListScreen(
-                                    destination = CharacterListDestination,
-                                    navOptions = navOptions {
-                                        popUpTo(0)
-                                    }
-                                )
-                            }
-                        )
+                        mainScreen()
                     }
                 }
             }

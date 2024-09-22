@@ -1,7 +1,7 @@
-package com.uvg.app.characterProfile
+package com.uvg.app.ui.characterProfile
 
-import Character
-import CharacterDb
+import com.uvg.app.data.Character
+import com.uvg.app.data.CharacterDb
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -61,7 +61,7 @@ private fun CharacterProfileScreen(
 
         AsyncImage(
             model = character.image,
-            contentDescription = "Character image",
+            contentDescription = "com.uvg.app.data.Character image",
             modifier = Modifier
                 .clip(CircleShape)
                 .height(300.dp)
@@ -110,7 +110,7 @@ private fun CharacterTopBar(
 ) {
     TopAppBar(
         title = {
-            Text(text = "Character Detail")
+            Text(text = "Character Details")
         },
         navigationIcon = {
             IconButton(onClick = onNavigateBack) {

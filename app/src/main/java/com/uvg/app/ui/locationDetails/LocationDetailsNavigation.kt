@@ -1,4 +1,4 @@
-package com.uvg.app.characterProfile
+package com.uvg.app.ui.locationDetails
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
@@ -10,26 +10,27 @@ import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CharacterProfileDestination(
-    val characterId: Int
+data class LocationDetailsDestination(
+    val locationId: Int
 )
 
-fun NavController.navigateToCharacterProfileScreen(
-    destination: CharacterProfileDestination,
+fun NavController.navigateToLocationDetailsScreen(
+    destination: LocationDetailsDestination,
     navOptions: NavOptions? = null
 ) {
     this.navigate(destination, navOptions)
 }
 
-fun NavGraphBuilder.characterProfileScreen(
+fun NavGraphBuilder.locationDetailsScreen(
     onNavigateBack: () -> Unit
 ) {
-    composable<CharacterProfileDestination> { backstackEntry ->
-        val destination: CharacterProfileDestination = backstackEntry.toRoute()
-        CharacterProfileRoute(
-            id = destination.characterId,
+    composable<LocationDetailsDestination> { backstackEntry ->
+        val destination: LocationDetailsDestination = backstackEntry.toRoute()
+
+        LocationDetailsRoute(
+            modifier = Modifier.fillMaxSize(),
             onNavigateBack = onNavigateBack,
-            modifier = Modifier.fillMaxSize()
+            locationId = destination.locationId
         )
     }
 }

@@ -1,7 +1,7 @@
-package com.uvg.app.characterList
+package com.uvg.app.ui.characterList
 
-import CharacterDb
-import Character
+import com.uvg.app.data.CharacterDb
+import com.uvg.app.data.Character
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

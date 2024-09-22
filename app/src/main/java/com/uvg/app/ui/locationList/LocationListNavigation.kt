@@ -1,4 +1,4 @@
-package com.uvg.app.characterList
+package com.uvg.app.ui.locationList
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
@@ -6,25 +6,26 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import com.uvg.app.navigation.NDestination
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object CharacterListDestination
+data object LocationListDestination: NDestination
 
-fun NavController.navigateToCharacterListScreen(
-    destination: CharacterListDestination,
+fun NavController.navigateToLocationListScreen(
+    destination: LocationListDestination,
     navOptions: NavOptions? = null
 ) {
     this.navigate(destination, navOptions)
 }
 
-fun NavGraphBuilder.characterListScreen(
-    onCharacterClick: (Int) -> Unit
+fun NavGraphBuilder.locationListScreen(
+    onLocationClick: (Int) -> Unit
 ) {
-    composable<CharacterListDestination> {
-        CharacterListRoute(
+    composable<LocationListDestination> {
+        LocationListRoute(
             modifier = Modifier.fillMaxSize(),
-            onCharacterClick = onCharacterClick
+            onLocationClick = onLocationClick
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.uvg.app.login
+package com.uvg.app.ui.login
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
