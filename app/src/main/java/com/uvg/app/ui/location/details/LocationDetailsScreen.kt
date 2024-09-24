@@ -1,7 +1,7 @@
-package com.uvg.app.ui.characterProfile
+package com.uvg.app.ui.location.details
 
-import com.uvg.app.data.Character
-import com.uvg.app.data.CharacterDb
+import Location
+import LocationDb
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,59 +23,45 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.uvg.app.ui.theme.AppTheme
 
 @Composable
-fun CharacterProfileRoute(
+fun LocationDetailsRoute(
     modifier: Modifier = Modifier,
-    id: Int,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    locationId: Int
 ) {
-    val characterDb = CharacterDb()
-    CharacterProfileScreen(
+    val db = LocationDb()
+
+    LocationDetailsScreen(
         modifier = modifier,
-        character = characterDb.getCharacterById(id),
-        onNavigateBack = onNavigateBack
+        onNavigateBack = onNavigateBack,
+        location = db.getLocationById(locationId)
     )
 }
 
 @Composable
-private fun CharacterProfileScreen(
+private fun LocationDetailsScreen(
     modifier: Modifier = Modifier,
-    character: Character,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    location: Location
 ) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CharacterTopBar(onNavigateBack = onNavigateBack)
+        LocationTopBar(onNavigateBack = onNavigateBack)
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        AsyncImage(
-            model = character.image,
-            contentDescription = "com.uvg.app.data.Character image",
-            modifier = Modifier
-                .clip(CircleShape)
-                .height(300.dp)
-                .width(300.dp)
-        )
-
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         Text(
-            text = character.name,
-            fontWeight = FontWeight.W600,
+            text = location.name,
             style = MaterialTheme.typography.headlineSmall
         )
-
-        Spacer(modifier = Modifier.height(30.dp))
+        
+        Spacer(modifier = Modifier.height(40.dp))
 
         Column(
             modifier = Modifier.width(300.dp),
@@ -84,20 +69,20 @@ private fun CharacterProfileScreen(
         ) {
             InformationRow(
                 modifier = Modifier.fillMaxWidth(),
-                label = "Species:",
-                value = character.species
+                label = "ID:",
+                value = location.id.toString()
             )
 
             InformationRow(
                 modifier = Modifier.fillMaxWidth(),
-                label = "Status:",
-                value = character.status
+                label = "Type:",
+                value = location.type
             )
 
             InformationRow(
                 modifier = Modifier.fillMaxWidth(),
-                label = "Gender:",
-                value = character.gender
+                label = "Dimensions:",
+                value = location.dimension
             )
         }
     }
@@ -105,12 +90,12 @@ private fun CharacterProfileScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CharacterTopBar(
+private fun LocationTopBar(
     onNavigateBack: () -> Unit
 ) {
     TopAppBar(
         title = {
-            Text(text = "Character Details")
+            Text(text = "Location Details")
         },
         navigationIcon = {
             IconButton(onClick = onNavigateBack) {
@@ -148,17 +133,10 @@ private fun InformationRow(
 private fun PreviewCharacterProfile() {
     AppTheme {
         Surface {
-            CharacterProfileScreen(
+            LocationDetailsScreen(
                 modifier = Modifier.fillMaxSize(),
-                character = Character(
-                    1,
-                    "Rick Sanchez",
-                    "Alive",
-                    "Human",
-                    "Male",
-                    "https://rickandmortyapi.com/api/character/avatar/1.jpeg"
-                ),
-                onNavigateBack = {}
+                onNavigateBack = {},
+                location = LocationDb().getLocationById(1)
             )
         }
     }

@@ -1,4 +1,4 @@
-package com.uvg.app.ui.characterList
+package com.uvg.app.ui.character.list
 
 import com.uvg.app.data.CharacterDb
 import com.uvg.app.data.Character

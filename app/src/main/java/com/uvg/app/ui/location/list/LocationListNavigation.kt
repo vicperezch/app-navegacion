@@ -1,4 +1,4 @@
-package com.uvg.app.ui.locationList
+package com.uvg.app.ui.location.list
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier

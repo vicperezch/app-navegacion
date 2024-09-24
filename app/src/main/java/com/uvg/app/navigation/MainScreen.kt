@@ -3,14 +3,18 @@ package com.uvg.app.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,23 +22,26 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.uvg.app.ui.characterList.CharacterListDestination
-import com.uvg.app.ui.characterList.characterListScreen
-import com.uvg.app.ui.characterList.navigateToCharacterListScreen
-import com.uvg.app.ui.characterProfile.CharacterProfileDestination
-import com.uvg.app.ui.characterProfile.characterProfileScreen
-import com.uvg.app.ui.characterProfile.navigateToCharacterProfileScreen
-import com.uvg.app.ui.locationDetails.LocationDetailsDestination
-import com.uvg.app.ui.locationDetails.locationDetailsScreen
-import com.uvg.app.ui.locationDetails.navigateToLocationDetailsScreen
-import com.uvg.app.ui.locationList.LocationListDestination
-import com.uvg.app.ui.locationList.locationListScreen
-import com.uvg.app.ui.locationList.navigateToLocationListScreen
+import com.uvg.app.ui.character.list.CharacterListDestination
+import com.uvg.app.ui.character.list.characterListScreen
+import com.uvg.app.ui.character.list.navigateToCharacterListScreen
+import com.uvg.app.ui.character.profile.CharacterProfileDestination
+import com.uvg.app.ui.character.profile.characterProfileScreen
+import com.uvg.app.ui.character.profile.navigateToCharacterProfileScreen
+import com.uvg.app.ui.location.details.LocationDetailsDestination
+import com.uvg.app.ui.location.details.locationDetailsScreen
+import com.uvg.app.ui.location.details.navigateToLocationDetailsScreen
+import com.uvg.app.ui.location.list.LocationListDestination
+import com.uvg.app.ui.location.list.locationListScreen
+import com.uvg.app.ui.location.list.navigateToLocationListScreen
 import com.uvg.app.ui.login.LoginDestination
 import com.uvg.app.ui.login.loginScreen
+import com.uvg.app.ui.userProfile.UserProfileDestination
+import com.uvg.app.ui.userProfile.userProfileScreen
 
 @Composable
 fun MainRoute() {
@@ -60,6 +67,14 @@ private fun MainScreen() {
             hasNews = false,
             badgeCount = null,
             destination = LocationListDestination
+        ),
+        NavigationItem(
+            title = "Profile",
+            unselectedIcon = Icons.Outlined.AccountCircle,
+            selectedIcon = Icons.Filled.AccountCircle,
+            hasNews = false,
+            badgeCount = null,
+            destination = UserProfileDestination
         )
     )
 
@@ -67,7 +82,10 @@ private fun MainScreen() {
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
+            NavigationBar(
+                modifier = Modifier,
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
                 menuItems.forEachIndexed { index, navigationItem ->
                     NavigationBarItem(
                         selected = selectedIndex == index,
@@ -83,10 +101,14 @@ private fun MainScreen() {
                                     imageVector = if (index == selectedIndex) {
                                         navigationItem.selectedIcon
                                     } else navigationItem.unselectedIcon,
-                                    contentDescription = navigationItem.title
+                                    contentDescription = navigationItem.title,
+                                    tint = MaterialTheme.colorScheme.onPrimary
                                 )
                             }
-                        }
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            indicatorColor = MaterialTheme.colorScheme.secondary
+                        )
                     )
                 }
             }
@@ -152,6 +174,10 @@ private fun MainScreen() {
                         }
                     )
                 }
+            )
+
+            userProfileScreen(
+                onLogoutClick = {}
             )
         }
     }
