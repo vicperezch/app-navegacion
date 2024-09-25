@@ -15,10 +15,13 @@ data class CharacterProfileDestination(
 )
 
 fun NavController.navigateToCharacterProfileScreen(
-    destination: CharacterProfileDestination,
+    characterId: Int,
     navOptions: NavOptions? = null
 ) {
-    this.navigate(destination, navOptions)
+    this.navigate(
+        route = CharacterProfileDestination(characterId = characterId),
+        navOptions = navOptions
+    )
 }
 
 fun NavGraphBuilder.characterProfileScreen(

@@ -15,10 +15,13 @@ data class LocationDetailsDestination(
 )
 
 fun NavController.navigateToLocationDetailsScreen(
-    destination: LocationDetailsDestination,
+    locationId: Int,
     navOptions: NavOptions? = null
 ) {
-    this.navigate(destination, navOptions)
+    this.navigate(
+        route = LocationDetailsDestination(locationId = locationId),
+        navOptions = navOptions
+    )
 }
 
 fun NavGraphBuilder.locationDetailsScreen(

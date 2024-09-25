@@ -8,11 +8,10 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.uvg.app.navigation.NDestination
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object UserProfileDestination: NDestination
+data object UserProfileDestination
 
 fun NavController.navigateToUserProfileScreen(
     destination: UserProfileDestination,
