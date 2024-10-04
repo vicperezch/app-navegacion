@@ -1,4 +1,4 @@
-package com.uvg.app.ui.character.profile
+package com.uvg.app.ui.main.character.profile
 
 import com.uvg.app.data.Character
 import com.uvg.app.data.CharacterDb

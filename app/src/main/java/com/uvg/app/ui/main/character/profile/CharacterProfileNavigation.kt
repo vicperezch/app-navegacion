@@ -1,4 +1,4 @@
-package com.uvg.app.ui.character.profile
+package com.uvg.app.ui.main.character.profile
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier

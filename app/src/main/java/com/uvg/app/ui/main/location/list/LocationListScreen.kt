@@ -1,4 +1,4 @@
-package com.uvg.app.ui.location.list
+package com.uvg.app.ui.main.location.list
 
 import Location
 import LocationDb

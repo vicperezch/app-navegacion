@@ -1,4 +1,4 @@
-package com.uvg.app.navigation.main
+package com.uvg.app.ui.main
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -17,6 +17,6 @@ fun NavGraphBuilder.mainScreen(
     onLogOutClick: () -> Unit
 ) {
     composable<MainDestination>() {
-        MainScreen(onLogOutClick = onLogOutClick)
+        MainScreen(onLogoutClick = onLogOutClick)
     }
 }

@@ -1,4 +1,4 @@
-package com.uvg.app.ui.userProfile
+package com.uvg.app.ui.main.userProfile
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding

@@ -1,13 +1,13 @@
-package com.uvg.app.ui.character
+package com.uvg.app.ui.main.character
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.navigation
-import com.uvg.app.ui.character.list.CharacterListDestination
-import com.uvg.app.ui.character.list.characterListScreen
-import com.uvg.app.ui.character.profile.characterProfileScreen
-import com.uvg.app.ui.character.profile.navigateToCharacterProfileScreen
+import com.uvg.app.ui.main.character.list.CharacterListDestination
+import com.uvg.app.ui.main.character.list.characterListScreen
+import com.uvg.app.ui.main.character.profile.characterProfileScreen
+import com.uvg.app.ui.main.character.profile.navigateToCharacterProfileScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

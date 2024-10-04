@@ -1,4 +1,4 @@
-package com.uvg.app.ui.location.list
+package com.uvg.app.ui.main.character.list
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
@@ -9,22 +9,22 @@ import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object LocationListDestination
+data object CharacterListDestination
 
-fun NavController.navigateToLocationListScreen(
-    destination: LocationListDestination,
+fun NavController.navigateToCharacterListScreen(
+    destination: CharacterListDestination,
     navOptions: NavOptions? = null
 ) {
     this.navigate(destination, navOptions)
 }
 
-fun NavGraphBuilder.locationListScreen(
-    onLocationClick: (Int) -> Unit
+fun NavGraphBuilder.characterListScreen(
+    onCharacterClick: (Int) -> Unit
 ) {
-    composable<LocationListDestination> {
-        LocationListRoute(
+    composable<CharacterListDestination> {
+        CharacterListRoute(
             modifier = Modifier.fillMaxSize(),
-            onLocationClick = onLocationClick
+            onCharacterClick = onCharacterClick
         )
     }
 }
