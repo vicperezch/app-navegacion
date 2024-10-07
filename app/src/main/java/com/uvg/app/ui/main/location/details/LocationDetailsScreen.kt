@@ -16,29 +16,44 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.uvg.app.R
+import com.uvg.app.ui.components.ErrorScreen
+import com.uvg.app.ui.components.LoadingScreen
 import com.uvg.app.ui.theme.AppTheme
 
 @Composable
 fun LocationDetailsRoute(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit,
-    locationId: Int
+    viewModel: LocationDetailsViewModel = viewModel()
 ) {
-    val db = LocationDb()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     LocationDetailsScreen(
         modifier = modifier,
         onNavigateBack = onNavigateBack,
-        location = db.getLocationById(locationId)
+        state = state,
+        onLoadingClick = {
+            viewModel.onLoadingClick()
+        },
+        onGetData = {
+            viewModel.onGetData()
+        }
     )
 }
 
@@ -46,43 +61,33 @@ fun LocationDetailsRoute(
 private fun LocationDetailsScreen(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit,
-    location: Location
+    onLoadingClick: () -> Unit,
+    onGetData: () -> Unit,
+    state: LocationDetailsState
 ) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        LocationTopBar(onNavigateBack = onNavigateBack)
-
-        Spacer(modifier = Modifier.height(40.dp))
-
-        Text(
-            text = location.name,
-            style = MaterialTheme.typography.headlineSmall
-        )
-        
-        Spacer(modifier = Modifier.height(40.dp))
-
-        Column(
-            modifier = Modifier.width(300.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            InformationRow(
-                modifier = Modifier.fillMaxWidth(),
-                label = "ID:",
-                value = location.id.toString()
+    when  {
+        state.isLoading -> {
+            LoadingScreen(
+                modifier = modifier,
+                onLoadingClick = onLoadingClick
             )
 
-            InformationRow(
-                modifier = Modifier.fillMaxWidth(),
-                label = "Type:",
-                value = location.type
-            )
+            onGetData()
+        }
 
-            InformationRow(
-                modifier = Modifier.fillMaxWidth(),
-                label = "Dimensions:",
-                value = location.dimension
+        state.hasError -> {
+            ErrorScreen(
+                modifier = modifier,
+                onGetData = onGetData,
+                errorText = "Error al obtener la ubicación."
+            )
+        }
+
+        else -> {
+            LocationDetailsContent(
+                location = state.data,
+                onNavigateBack = onNavigateBack,
+                modifier = modifier
             )
         }
     }
@@ -114,6 +119,52 @@ private fun LocationTopBar(
 }
 
 @Composable
+private fun LocationDetailsContent(
+    location: Location,
+    modifier: Modifier = Modifier,
+    onNavigateBack: () -> Unit
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        LocationTopBar(onNavigateBack = onNavigateBack)
+
+        Spacer(modifier = Modifier.height(40.dp))
+
+        Text(
+            text = location.name,
+            style = MaterialTheme.typography.headlineSmall
+        )
+
+        Spacer(modifier = Modifier.height(40.dp))
+
+        Column(
+            modifier = Modifier.width(300.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            InformationRow(
+                modifier = Modifier.fillMaxWidth(),
+                label = "ID:",
+                value = location.id.toString()
+            )
+
+            InformationRow(
+                modifier = Modifier.fillMaxWidth(),
+                label = "Type:",
+                value = location.type
+            )
+
+            InformationRow(
+                modifier = Modifier.fillMaxWidth(),
+                label = "Dimensions:",
+                value = location.dimension
+            )
+        }
+    }
+}
+
+@Composable
 private fun InformationRow(
     modifier: Modifier = Modifier,
     label: String,
@@ -136,7 +187,13 @@ private fun PreviewCharacterProfile() {
             LocationDetailsScreen(
                 modifier = Modifier.fillMaxSize(),
                 onNavigateBack = {},
-                location = LocationDb().getLocationById(1)
+                state = LocationDetailsState(
+                    data = LocationDb().getLocationById(1),
+                    hasError = true,
+                    isLoading = false
+                ),
+                onLoadingClick = {},
+                onGetData = {}
             )
         }
     }

@@ -27,10 +27,8 @@ fun NavController.navigateToCharacterProfileScreen(
 fun NavGraphBuilder.characterProfileScreen(
     onNavigateBack: () -> Unit
 ) {
-    composable<CharacterProfileDestination> { backstackEntry ->
-        val destination: CharacterProfileDestination = backstackEntry.toRoute()
+    composable<CharacterProfileDestination> {
         CharacterProfileRoute(
-            id = destination.characterId,
             onNavigateBack = onNavigateBack,
             modifier = Modifier.fillMaxSize()
         )

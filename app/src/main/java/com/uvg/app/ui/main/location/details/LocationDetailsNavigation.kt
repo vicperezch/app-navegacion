@@ -27,13 +27,10 @@ fun NavController.navigateToLocationDetailsScreen(
 fun NavGraphBuilder.locationDetailsScreen(
     onNavigateBack: () -> Unit
 ) {
-    composable<LocationDetailsDestination> { backstackEntry ->
-        val destination: LocationDetailsDestination = backstackEntry.toRoute()
-
+    composable<LocationDetailsDestination> {
         LocationDetailsRoute(
             modifier = Modifier.fillMaxSize(),
-            onNavigateBack = onNavigateBack,
-            locationId = destination.locationId
+            onNavigateBack = onNavigateBack
         )
     }
 }
