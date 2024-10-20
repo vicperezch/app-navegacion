@@ -1,51 +1,38 @@
 package com.uvg.app
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
-import com.uvg.app.ui.login.LoginDestination
-import com.uvg.app.ui.login.loginScreen
-import com.uvg.app.ui.main.MainDestination
-import com.uvg.app.ui.main.mainScreen
-import com.uvg.app.ui.main.navigateToMainScreen
+import androidx.activity.viewModels
+import androidx.compose.material3.Surface
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import com.uvg.app.navigation.AuthState
+import com.uvg.app.navigation.AuthViewModel
+import com.uvg.app.ui.AppContent
 import com.uvg.app.ui.theme.AppTheme
 
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+
 class MainActivity : ComponentActivity() {
+    private val authViewModel: AuthViewModel by viewModels { AuthViewModel.Factory }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        installSplashScreen().setKeepOnScreenCondition {
+            authViewModel.authStatus.value is AuthState.Loading
+        }
+
         setContent {
             AppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val navController = rememberNavController()
-
-                    NavHost(
-                        navController = navController,
-                        startDestination = LoginDestination,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)
-                    ) {
-                        loginScreen(
-                            onLoginClick = {
-                                navController.navigateToMainScreen()
-                            }
-                        )
-
-                        mainScreen(
-                            onLogOutClick = {
-                                navController.navigateUp()
-                                navController.clearBackStack<MainDestination>()
-                            }
-                        )
-                    }
+                Surface {
+                    AppContent()
                 }
             }
         }

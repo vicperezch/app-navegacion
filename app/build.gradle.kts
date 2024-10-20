@@ -70,4 +70,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.kotlinx.serialization.json.v151)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.splashscreen)
 }

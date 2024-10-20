@@ -13,22 +13,29 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.uvg.app.R
 import com.uvg.app.ui.theme.AppTheme
 
 @Composable
 fun UserProfileRoute(
     modifier: Modifier = Modifier,
-    onLogOutClick: () -> Unit
+    onLogOutClick: () -> Unit,
+    viewModel: UserProfileViewModel = viewModel(factory = UserProfileViewModel.Factory)
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     UserProfileScreen(
         modifier = modifier,
+        state = state,
         onLogOutClick = onLogOutClick
     )
 }
@@ -36,6 +43,7 @@ fun UserProfileRoute(
 @Composable
 private fun UserProfileScreen(
     modifier: Modifier = Modifier,
+    state: UserProfileState,
     onLogOutClick: () -> Unit
 ) {
     Column(
@@ -60,7 +68,7 @@ private fun UserProfileScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = "Nombre:")
-                Text(text = "Victor Pérez")
+                state.username?.let { Text(text = it) }
             }
 
             Row(
@@ -87,7 +95,8 @@ private fun PreviewLoginScreen() {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(48.dp),
-                onLogOutClick = {}
+                onLogOutClick = {},
+                state = UserProfileState(username = "Victor")
             )
         }
     }

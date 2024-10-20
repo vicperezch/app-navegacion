@@ -1,5 +1,6 @@
 package com.uvg.app.ui.main
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -26,6 +27,7 @@ import com.uvg.app.ui.main.character.characterGraph
 import com.uvg.app.ui.main.location.locationGraph
 import com.uvg.app.ui.main.userProfile.userProfileScreen
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen(
     onLogoutClick: () -> Unit,
@@ -42,7 +44,9 @@ fun MainScreen(
     } else {
         false
     }
+
     Scaffold(
+        topBar = {},
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             AnimatedVisibility(
@@ -66,11 +70,11 @@ fun MainScreen(
                 )
             }
         }
-    ) { innerPadding ->
+    ) {
         NavHost(
             navController = navController,
             startDestination = CharacterNavGraph,
-            modifier = Modifier.fillMaxSize().padding(innerPadding)
+            modifier = Modifier.fillMaxSize()
         ) {
             characterGraph(navController)
             locationGraph(navController)
