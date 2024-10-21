@@ -1,7 +1,6 @@
 package com.uvg.app.ui.main.location.details
 
-import Location
-import LocationDb
+import com.uvg.app.data.local.LocationDb
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +15,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -25,13 +23,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.uvg.app.R
+import com.uvg.app.domain.Location
 import com.uvg.app.ui.components.ErrorScreen
 import com.uvg.app.ui.components.LoadingScreen
 import com.uvg.app.ui.theme.AppTheme
@@ -188,7 +184,7 @@ private fun PreviewCharacterProfile() {
                 modifier = Modifier.fillMaxSize(),
                 onNavigateBack = {},
                 state = LocationDetailsState(
-                    data = LocationDb().getLocationById(1),
+                    data = LocationDb.getLocationById(1),
                     hasError = true,
                     isLoading = false
                 ),

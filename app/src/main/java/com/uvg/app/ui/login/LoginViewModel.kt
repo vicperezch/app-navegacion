@@ -9,6 +9,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.uvg.app.dataStore
 import com.uvg.app.data.DataStoreUserPrefs
 import com.uvg.app.domain.UserPreferences
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -29,6 +30,20 @@ class LoginViewModel (private val userPreferences: UserPreferences): ViewModel()
     fun saveUsername() {
         viewModelScope.launch {
             userPreferences.setUsername(_uiState.value.username)
+
+            _uiState.update { state ->
+                state.copy(
+                    loading = true
+                )
+            }
+
+            delay(2000)
+
+            _uiState.update { state ->
+                state.copy(
+                    loading = false
+                )
+            }
         }
     }
 

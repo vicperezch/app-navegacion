@@ -1,6 +1,6 @@
 package com.uvg.app.ui.main.location.details
 
-import LocationDb
+import com.uvg.app.data.local.LocationDb
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,10 +12,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LocationDetailsViewModel(savedStateHandle: SavedStateHandle): ViewModel() {
-    private val locationDb = LocationDb()
     private val locationDetails = savedStateHandle.toRoute<LocationDetailsDestination>()
     private val _uiState = MutableStateFlow(LocationDetailsState(
-        data = locationDb.getLocationById(locationDetails.locationId)
+        data = LocationDb.getLocationById(locationDetails.locationId)
     ))
     val uiState = _uiState.asStateFlow()
 

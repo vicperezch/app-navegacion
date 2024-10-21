@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.uvg.app.data.CharacterDb
+import com.uvg.app.data.local.CharacterDb
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,11 +12,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CharacterProfileViewModel(savedStateHandle: SavedStateHandle): ViewModel() {
-    private val characterDb = CharacterDb()
     private val characterProfile = savedStateHandle.toRoute<CharacterProfileDestination>()
     private val _uiState = MutableStateFlow(
         CharacterProfileState(
-        data = characterDb.getCharacterById(characterProfile.characterId)
+        data = CharacterDb.getCharacterById(characterProfile.characterId)
     ))
     val uiState = _uiState.asStateFlow()
 

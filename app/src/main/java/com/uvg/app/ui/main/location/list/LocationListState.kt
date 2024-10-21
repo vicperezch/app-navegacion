@@ -1,6 +1,6 @@
 package com.uvg.app.ui.main.location.list
 
-import Location
+import com.uvg.app.domain.Location
 
 data class LocationListState(
     val data: List<Location>,

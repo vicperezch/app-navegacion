@@ -1,4 +1,4 @@
-package com.uvg.app.data
+package com.uvg.app.domain
 
 data class Character(
     val id: Int,

@@ -1,6 +1,8 @@
-package com.uvg.app.data
+package com.uvg.app.data.local
 
-class CharacterDb {
+import com.uvg.app.domain.Character
+
+object CharacterDb {
     private val characters: List<Character> = listOf(
         Character(1, "Rick Sanchez", "Alive", "Human", "Male", "https://rickandmortyapi.com/api/character/avatar/1.jpeg"),
         Character(2, "Morty Smith", "Alive", "Human", "Male", "https://rickandmortyapi.com/api/character/avatar/2.jpeg"),

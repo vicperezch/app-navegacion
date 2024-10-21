@@ -1,6 +1,6 @@
 package com.uvg.app.ui.main.character.list
 
-import com.uvg.app.data.Character
+import com.uvg.app.domain.Character
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.uvg.app.data.CharacterDb
+import com.uvg.app.data.local.CharacterDb
 import com.uvg.app.ui.components.ErrorScreen
 import com.uvg.app.ui.components.LoadingScreen
 import com.uvg.app.ui.theme.AppTheme
@@ -38,7 +38,7 @@ import com.uvg.app.ui.theme.AppTheme
 @Composable
 fun CharacterListRoute(
     modifier: Modifier = Modifier,
-    viewModel: CharacterListViewModel = viewModel(),
+    viewModel: CharacterListViewModel = viewModel(factory = CharacterListViewModel.Factory),
     onCharacterClick: (Int) -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -156,7 +156,7 @@ private fun CharacterListPreview() {
             CharacterListScreen(
                 modifier = Modifier.fillMaxSize(),
                 state = CharacterListState(
-                    data = CharacterDb().getAllCharacters()
+                    data = CharacterDb.getAllCharacters()
                 ),
                 onCharacterClick = {},
                 onLoadingClick = {},

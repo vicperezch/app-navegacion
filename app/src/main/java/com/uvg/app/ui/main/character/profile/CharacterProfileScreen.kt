@@ -1,7 +1,6 @@
 package com.uvg.app.ui.main.character.profile
 
-import com.uvg.app.data.Character
-import com.uvg.app.data.CharacterDb
+import com.uvg.app.data.local.CharacterDb
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -185,7 +184,7 @@ private fun PreviewCharacterProfile() {
             CharacterProfileScreen(
                 modifier = Modifier.fillMaxSize(),
                 state = CharacterProfileState(
-                    data = CharacterDb().getCharacterById(1),
+                    data = CharacterDb.getCharacterById(1),
                     isLoading = false
                 ),
                 onNavigateBack = {},

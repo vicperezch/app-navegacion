@@ -1,6 +1,8 @@
-// import .....Location
+package com.uvg.app.data.local
 
-class LocationDb {
+import com.uvg.app.domain.Location
+
+object LocationDb {
     private val locations: List<Location> = listOf(
         Location(1, "Earth (C-137)", "Planet", "Dimension C-137"),
         Location(2, "Abadango", "Cluster", "unknown"),

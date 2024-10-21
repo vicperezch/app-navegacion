@@ -44,6 +44,7 @@ fun LoginRoute(
             }
         },
         username = state.username,
+        loading = state.loading,
         onUsernameChange = {
             viewModel.onUsernameChange(it)
         }
@@ -54,6 +55,7 @@ fun LoginRoute(
 private fun LoginScreen(
     modifier: Modifier = Modifier,
     username: String,
+    loading: Boolean,
     onLoginClick: () -> Unit,
     onUsernameChange: (String) -> Unit
 ) {
@@ -86,7 +88,8 @@ private fun LoginScreen(
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onLoginClick
+                onClick = onLoginClick,
+                enabled = !loading
             ) {
                 Text(text = "Entrar")
             }
@@ -109,7 +112,8 @@ private fun PreviewLoginScreen() {
                     .padding(48.dp),
                 onLoginClick = {},
                 username = "",
-                onUsernameChange = {}
+                onUsernameChange = {},
+                loading = false
             )
         }
     }
