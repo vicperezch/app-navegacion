@@ -34,15 +34,16 @@ fun LocationListRoute(
     viewModel: LocationListViewModel = viewModel(factory = LocationListViewModel.Factory)
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
     LocationListScreen(
         modifier = modifier,
         onLocationClick = onLocationClick,
         state = state,
         onLoadingClick = {
-            viewModel.onLoadingClick()
+            viewModel.onEvent(LocationListEvent.LoadingClick)
         },
         onGetDataClick = {
-            viewModel.onGetData()
+            viewModel.onEvent(LocationListEvent.RetryClick)
         }
     )
 }
@@ -62,8 +63,6 @@ private fun LocationListScreen(
                 modifier = modifier,
                 onLoadingClick = onLoadingClick
             )
-
-            onGetDataClick()
         }
 
         state.hasError -> {
@@ -130,7 +129,7 @@ private fun PreviewCharacterProfile() {
                 modifier = Modifier.fillMaxSize(),
                 onLocationClick = {},
                 state = LocationListState(
-                    data = LocationDb.getAllLocations()
+                    data = LocationDb().getAllLocations()
                 ),
                 onLoadingClick = {},
                 onGetDataClick = {}

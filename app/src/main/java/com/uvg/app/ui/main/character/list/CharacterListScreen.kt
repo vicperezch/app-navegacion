@@ -48,10 +48,10 @@ fun CharacterListRoute(
         state = state,
         onCharacterClick = onCharacterClick,
         getData = {
-            viewModel.onGetData()
+            viewModel.onEvent(CharacterListEvent.RetryClick)
         },
         onLoadingClick = {
-            viewModel.onLoadingClick()
+            viewModel.onEvent(CharacterListEvent.LoadingClick)
         }
     )
 }
@@ -71,8 +71,6 @@ private fun CharacterListScreen(
                 modifier = modifier,
                 onLoadingClick = onLoadingClick
             )
-
-            getData()
         }
 
         state.hasError -> {
@@ -156,7 +154,7 @@ private fun CharacterListPreview() {
             CharacterListScreen(
                 modifier = Modifier.fillMaxSize(),
                 state = CharacterListState(
-                    data = CharacterDb.getAllCharacters()
+                    data = CharacterDb().getAllCharacters()
                 ),
                 onCharacterClick = {},
                 onLoadingClick = {},

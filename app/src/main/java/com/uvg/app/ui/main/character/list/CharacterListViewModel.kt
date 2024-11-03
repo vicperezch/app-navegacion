@@ -1,6 +1,5 @@
 package com.uvg.app.ui.main.character.list
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -8,48 +7,61 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.uvg.app.data.local.CharacterDb
-import com.uvg.app.data.local.dao.CharacterDao
 import com.uvg.app.data.repository.LocalCharacterRepository
 import com.uvg.app.di.Dependencies
-import kotlinx.coroutines.delay
+import com.uvg.app.domain.CharacterRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class CharacterListViewModel(private val characterDao: CharacterDao): ViewModel() {
-    private val localCharacterRepository = LocalCharacterRepository(characterDao)
-    private val _uiState = MutableStateFlow(
-        CharacterListState(
-            data = CharacterDb.getAllCharacters())
-    )
+class CharacterListViewModel(private val characterRepository: CharacterRepository): ViewModel() {
+    private var getDataJob: Job? = null
+    private val _uiState = MutableStateFlow(CharacterListState())
     val uiState = _uiState.asStateFlow()
 
-    fun onGetData() {
-        viewModelScope.launch {
-            localCharacterRepository.insertAllCharacters()
+    init {
+        getData()
+    }
 
-            _uiState.update { state ->
-                state.copy(
-                    isLoading = true,
-                    hasError = false,
-                    data = localCharacterRepository.getAllCharacters()
-                )
+    fun onEvent(event: CharacterListEvent) {
+        when (event) {
+            CharacterListEvent.LoadingClick -> {
+                getDataJob?.cancel()
+
+                _uiState.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        hasError = true
+                    )
+                }
             }
 
-            delay(4000)
-
-            _uiState.update { state ->
-                state.copy(isLoading = false)
+            CharacterListEvent.RetryClick -> {
+                getData()
             }
         }
     }
 
-    fun onLoadingClick() {
-        _uiState.update { it.copy(
-            isLoading = false,
-            hasError = true
-        ) }
+    private fun getData() {
+        getDataJob = viewModelScope.launch {
+            _uiState.update { state ->
+                state.copy(
+                    isLoading = true,
+                    hasError = false
+                )
+            }
+
+            val characters = characterRepository.getCharacters()
+
+            _uiState.update { state ->
+                state.copy(
+                    isLoading = false,
+                    data = characters
+                )
+            }
+        }
     }
 
     companion object {
@@ -57,8 +69,9 @@ class CharacterListViewModel(private val characterDao: CharacterDao): ViewModel(
             initializer {
                 val application = checkNotNull(this[APPLICATION_KEY])
                 val db = Dependencies.provideDatabase(application)
+
                 CharacterListViewModel(
-                    characterDao = db.characterDao()
+                    characterRepository = LocalCharacterRepository(db.characterDao())
                 )
             }
         }

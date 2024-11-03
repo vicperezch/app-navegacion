@@ -8,14 +8,22 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.uvg.app.dataStore
 import com.uvg.app.data.DataStoreUserPrefs
+import com.uvg.app.data.repository.LocalCharacterRepository
+import com.uvg.app.data.repository.LocalLocationRepository
+import com.uvg.app.di.Dependencies
+import com.uvg.app.domain.CharacterRepository
+import com.uvg.app.domain.LocationRepository
 import com.uvg.app.domain.UserPreferences
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LoginViewModel (private val userPreferences: UserPreferences): ViewModel() {
+class LoginViewModel (
+    private val userPreferences: UserPreferences,
+    private val characterRepository: CharacterRepository,
+    private val locationRepository: LocationRepository
+): ViewModel() {
     private val _uiState = MutableStateFlow(LoginState())
     val state = _uiState.asStateFlow()
 
@@ -27,22 +35,31 @@ class LoginViewModel (private val userPreferences: UserPreferences): ViewModel()
         }
     }
 
-    fun saveUsername() {
+    fun onLogin() {
         viewModelScope.launch {
             userPreferences.setUsername(_uiState.value.username)
 
             _uiState.update { state ->
                 state.copy(
-                    loading = true
+                    isLoading = true
                 )
             }
 
-            delay(2000)
+            if (characterRepository.initialSync() && locationRepository.initialSync()) {
+                _uiState.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        isSuccessful = true
+                    )
+                }
 
-            _uiState.update { state ->
-                state.copy(
-                    loading = false
-                )
+            } else {
+                _uiState.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        isSuccessful = true
+                    )
+                }
             }
         }
     }
@@ -51,9 +68,12 @@ class LoginViewModel (private val userPreferences: UserPreferences): ViewModel()
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = checkNotNull(this[APPLICATION_KEY])
+                val appDatabase = Dependencies.provideDatabase(application)
 
                 LoginViewModel(
-                    userPreferences = DataStoreUserPrefs(application.dataStore)
+                    userPreferences = DataStoreUserPrefs(application.dataStore),
+                    characterRepository = LocalCharacterRepository(appDatabase.characterDao()),
+                    locationRepository = LocalLocationRepository(appDatabase.locationDao())
                 )
             }
         }

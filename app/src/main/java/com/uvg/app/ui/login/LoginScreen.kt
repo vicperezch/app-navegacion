@@ -13,10 +13,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -37,14 +35,9 @@ fun LoginRoute(
 
     LoginScreen(
         modifier = modifier,
-        onLoginClick = {
-            if (state.username.isNotBlank()) {
-                viewModel.saveUsername()
-                onLoginClick()
-            }
-        },
-        username = state.username,
-        loading = state.loading,
+        onLoginClick = viewModel::onLogin,
+        onSuccessfulLogin = onLoginClick,
+        state = state,
         onUsernameChange = {
             viewModel.onUsernameChange(it)
         }
@@ -54,11 +47,15 @@ fun LoginRoute(
 @Composable
 private fun LoginScreen(
     modifier: Modifier = Modifier,
-    username: String,
-    loading: Boolean,
+    state: LoginState,
     onLoginClick: () -> Unit,
+    onSuccessfulLogin: () -> Unit,
     onUsernameChange: (String) -> Unit
 ) {
+    LaunchedEffect(key1 = state.isSuccessful) {
+        if (state.isSuccessful) onSuccessfulLogin()
+    }
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -77,7 +74,7 @@ private fun LoginScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(
-                value = username,
+                value = state.username,
                 onValueChange = onUsernameChange,
                 placeholder = {
                     Text(text = "Nombre")
@@ -89,7 +86,7 @@ private fun LoginScreen(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = onLoginClick,
-                enabled = !loading
+                enabled = !state.isLoading
             ) {
                 Text(text = "Entrar")
             }
@@ -111,9 +108,9 @@ private fun PreviewLoginScreen() {
                     .fillMaxSize()
                     .padding(48.dp),
                 onLoginClick = {},
-                username = "",
+                state = LoginState(),
                 onUsernameChange = {},
-                loading = false
+                onSuccessfulLogin = {}
             )
         }
     }

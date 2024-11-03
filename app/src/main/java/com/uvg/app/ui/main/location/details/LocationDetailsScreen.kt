@@ -36,7 +36,7 @@ import com.uvg.app.ui.theme.AppTheme
 fun LocationDetailsRoute(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit,
-    viewModel: LocationDetailsViewModel = viewModel()
+    viewModel: LocationDetailsViewModel = viewModel(factory = LocationDetailsViewModel.Factory)
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -48,7 +48,7 @@ fun LocationDetailsRoute(
             viewModel.onLoadingClick()
         },
         onGetData = {
-            viewModel.onGetData()
+            viewModel.getData()
         }
     )
 }
@@ -67,8 +67,6 @@ private fun LocationDetailsScreen(
                 modifier = modifier,
                 onLoadingClick = onLoadingClick
             )
-
-            onGetData()
         }
 
         state.hasError -> {
@@ -80,11 +78,13 @@ private fun LocationDetailsScreen(
         }
 
         else -> {
-            LocationDetailsContent(
-                location = state.data,
-                onNavigateBack = onNavigateBack,
-                modifier = modifier
-            )
+            state.data?.let {
+                LocationDetailsContent(
+                    location = it,
+                    onNavigateBack = onNavigateBack,
+                    modifier = modifier
+                )
+            }
         }
     }
 }
@@ -184,7 +184,7 @@ private fun PreviewCharacterProfile() {
                 modifier = Modifier.fillMaxSize(),
                 onNavigateBack = {},
                 state = LocationDetailsState(
-                    data = LocationDb.getLocationById(1),
+                    data = LocationDb().getLocationById(1),
                     hasError = true,
                     isLoading = false
                 ),

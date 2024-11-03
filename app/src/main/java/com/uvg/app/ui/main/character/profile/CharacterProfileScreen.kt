@@ -39,15 +39,16 @@ import com.uvg.app.ui.theme.AppTheme
 fun CharacterProfileRoute(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit,
-    viewModel: CharacterProfileViewModel = viewModel()
+    viewModel: CharacterProfileViewModel = viewModel(factory = CharacterProfileViewModel.Factory)
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
     CharacterProfileScreen(
         modifier = modifier,
         state = state,
         onNavigateBack = onNavigateBack,
         getData = {
-            viewModel.onGetData()
+            viewModel.getData()
         },
         onLoadingClick = {
             viewModel.onLoadingClick()
@@ -69,8 +70,6 @@ private fun CharacterProfileScreen(
                 modifier = modifier,
                 onLoadingClick = onLoadingClick
             )
-            
-            getData()
         }
         
         state.hasError -> {
@@ -91,7 +90,7 @@ private fun CharacterProfileScreen(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 AsyncImage(
-                    model = state.data.image,
+                    model = state.data?.image,
                     contentDescription = "Character image",
                     modifier = Modifier
                         .clip(CircleShape)
@@ -101,11 +100,13 @@ private fun CharacterProfileScreen(
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Text(
-                    text = state.data.name,
-                    fontWeight = FontWeight.W600,
-                    style = MaterialTheme.typography.headlineSmall
-                )
+                state.data?.let {
+                    Text(
+                        text = it.name,
+                        fontWeight = FontWeight.W600,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -113,23 +114,25 @@ private fun CharacterProfileScreen(
                     modifier = Modifier.width(300.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    InformationRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        label = "Species:",
-                        value = state.data.species
-                    )
+                    state.data?.let {
+                        InformationRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            label = "Species:",
+                            value = it.species
+                        )
 
-                    InformationRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        label = "Status:",
-                        value = state.data.status
-                    )
+                        InformationRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            label = "Status:",
+                            value = it.status
+                        )
 
-                    InformationRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        label = "Gender:",
-                        value = state.data.gender
-                    )
+                        InformationRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            label = "Gender:",
+                            value = it.gender
+                        )
+                    }
                 }
             }
         }
@@ -184,7 +187,7 @@ private fun PreviewCharacterProfile() {
             CharacterProfileScreen(
                 modifier = Modifier.fillMaxSize(),
                 state = CharacterProfileState(
-                    data = CharacterDb.getCharacterById(1),
+                    data = CharacterDb().getCharacterById(1),
                     isLoading = false
                 ),
                 onNavigateBack = {},

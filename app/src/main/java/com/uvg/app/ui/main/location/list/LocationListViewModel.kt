@@ -1,66 +1,73 @@
 package com.uvg.app.ui.main.location.list
 
-import com.uvg.app.data.local.LocationDb
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.uvg.app.data.local.dao.CharacterDao
-import com.uvg.app.data.local.dao.LocationDao
 import com.uvg.app.data.repository.LocalLocationRepository
 import com.uvg.app.di.Dependencies
-import com.uvg.app.ui.main.character.list.CharacterListViewModel
-import kotlinx.coroutines.delay
+import com.uvg.app.domain.LocationRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LocationListViewModel(private val locationDao: LocationDao): ViewModel() {
-    private val locationRepository = LocalLocationRepository(locationDao)
-    private val _uiState = MutableStateFlow(
-        LocationListState(
-        data = LocationDb.getAllLocations())
-    )
+class LocationListViewModel(private val locationRepository: LocationRepository): ViewModel() {
+    private var getDataJob: Job? = null
+    private val _uiState = MutableStateFlow(LocationListState())
     val uiState = _uiState.asStateFlow()
 
-    fun onGetData() {
-        viewModelScope.launch {
-            locationRepository.insertAllLocations()
+    fun onEvent(event: LocationListEvent) {
+        when (event) {
+            LocationListEvent.LoadingClick -> {
+                getDataJob?.cancel()
 
-            _uiState.update { state ->
-                state.copy(
-                    isLoading = true,
-                    hasError = false,
-                    data = locationRepository.getAllLocations()
-                )
+                _uiState.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        hasError = true
+                    )
+                }
             }
 
-            delay(4000)
-
-            _uiState.update { state ->
-                state.copy(isLoading = false)
+            LocationListEvent.RetryClick -> {
+                getData()
             }
         }
     }
 
-    fun onLoadingClick() {
-        _uiState.update { it.copy(
-            isLoading = false,
-            hasError = true
-        ) }
+    private fun getData() {
+        getDataJob = viewModelScope.launch {
+            _uiState.update { state ->
+                state.copy(
+                    isLoading = true,
+                    hasError = false
+                )
+            }
+
+            val locations = locationRepository.getLocations()
+
+            _uiState.update { state ->
+                state.copy(
+                    isLoading = false,
+                    data = locations
+                )
+            }
+        }
     }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
+
             initializer {
                 val application = checkNotNull(this[APPLICATION_KEY])
                 val db = Dependencies.provideDatabase(application)
+
                 LocationListViewModel(
-                    locationDao = db.locationDao()
+                    locationRepository = LocalLocationRepository(db.locationDao())
                 )
             }
         }
