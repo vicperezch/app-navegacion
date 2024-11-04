@@ -13,18 +13,19 @@ import kotlin.coroutines.coroutineContext
 
 class LocalLocationRepository(private val locationDao: LocationDao): LocationRepository {
 
-    override suspend fun initialSync(): Boolean {
-        return try {
+    override suspend fun initialSync(locations: List<Location>): Boolean {
+        try {
+            val locationsToInsert = locations.map { it.mapToEntity() }
+
             if (locationDao.getAllLocations().isEmpty()) {
-                val locationDb = LocationDb()
-                val locationsToInsert = locationDb.getAllLocations().map { it.mapToEntity() }
                 locationDao.insertAll(locationsToInsert)
             }
-            true
+
+            return true
+
         } catch (e: Exception) {
             coroutineContext.ensureActive()
-            println(e)
-            false
+            return false
         }
     }
 

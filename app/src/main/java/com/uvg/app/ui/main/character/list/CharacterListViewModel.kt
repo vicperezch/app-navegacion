@@ -6,17 +6,26 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.uvg.app.data.local.CharacterDb
-import com.uvg.app.data.repository.LocalCharacterRepository
+import com.uvg.app.data.local.entity.mapToEntity
+import com.uvg.app.data.local.repository.LocalCharacterRepository
+import com.uvg.app.data.network.dto.mapToCharacterModel
 import com.uvg.app.di.Dependencies
+import com.uvg.app.di.KtorDependencies
 import com.uvg.app.domain.CharacterRepository
+import com.uvg.app.domain.network.RickMortyApi
+import com.uvg.app.util.map
+import com.uvg.app.util.onError
+import com.uvg.app.util.onSuccess
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class CharacterListViewModel(private val characterRepository: CharacterRepository): ViewModel() {
+class CharacterListViewModel(
+    private val rickMortyApi: RickMortyApi,
+    private val characterRepository: CharacterRepository
+): ViewModel() {
     private var getDataJob: Job? = null
     private val _uiState = MutableStateFlow(CharacterListState())
     val uiState = _uiState.asStateFlow()
@@ -46,31 +55,39 @@ class CharacterListViewModel(private val characterRepository: CharacterRepositor
 
     private fun getData() {
         getDataJob = viewModelScope.launch {
-            _uiState.update { state ->
-                state.copy(
-                    isLoading = true,
-                    hasError = false
-                )
-            }
-
-            val characters = characterRepository.getCharacters()
-
-            _uiState.update { state ->
-                state.copy(
-                    isLoading = false,
-                    data = characters
-                )
-            }
+            rickMortyApi
+                .getCharacters()
+                .map { response -> response.results.map { it.mapToCharacterModel() }}
+                .onSuccess { characters ->
+                    characterRepository.initialSync(characters)
+                    _uiState.update { state ->
+                        state.copy(
+                            isLoading = false,
+                            hasError = false,
+                            data = characters
+                        )
+                    }
+                }
+                .onError {
+                    _uiState.update { state ->
+                        state.copy(
+                            isLoading = false,
+                            hasError = true
+                        )
+                    }
+                }
         }
     }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
+                val api = com.uvg.app.data.network.RickMortyApi(KtorDependencies.provideHttpClient())
                 val application = checkNotNull(this[APPLICATION_KEY])
                 val db = Dependencies.provideDatabase(application)
 
                 CharacterListViewModel(
+                    rickMortyApi = api,
                     characterRepository = LocalCharacterRepository(db.characterDao())
                 )
             }

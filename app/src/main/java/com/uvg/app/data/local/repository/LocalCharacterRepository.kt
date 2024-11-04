@@ -1,21 +1,25 @@
-package com.uvg.app.data.repository
+package com.uvg.app.data.local.repository
 
 import com.uvg.app.data.local.CharacterDb
 import com.uvg.app.data.local.dao.CharacterDao
+import com.uvg.app.data.local.entity.CharacterEntity
 import com.uvg.app.data.local.entity.mapToEntity
 import com.uvg.app.data.local.entity.mapToModel
 import com.uvg.app.domain.Character
 import com.uvg.app.domain.CharacterRepository
+import com.uvg.app.domain.network.RickMortyApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlin.coroutines.coroutineContext
 
-class LocalCharacterRepository(private val characterDao: CharacterDao): CharacterRepository {
-    override suspend fun initialSync(): Boolean {
-        return try {
+class LocalCharacterRepository(
+    private val characterDao: CharacterDao,
+): CharacterRepository {
+    override suspend fun initialSync(characters: List<Character>): Boolean {
+        try {
+            val charactersToInsert = characters.map { it.mapToEntity() }
+
             if (characterDao.getAllCharacters().isEmpty()) {
-                val characterDb = CharacterDb()
-                val charactersToInsert = characterDb.getAllCharacters().map { it.mapToEntity() }
                 characterDao.insertAll(charactersToInsert)
             }
 
@@ -23,8 +27,7 @@ class LocalCharacterRepository(private val characterDao: CharacterDao): Characte
 
         } catch (e: Exception) {
             coroutineContext.ensureActive()
-            println(e)
-            false
+            return false
         }
     }
 

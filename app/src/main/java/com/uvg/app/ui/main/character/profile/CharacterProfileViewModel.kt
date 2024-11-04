@@ -9,11 +9,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.toRoute
-import com.uvg.app.data.local.CharacterDb
-import com.uvg.app.data.repository.LocalCharacterRepository
+import com.uvg.app.data.local.repository.LocalCharacterRepository
 import com.uvg.app.di.Dependencies
 import com.uvg.app.domain.CharacterRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

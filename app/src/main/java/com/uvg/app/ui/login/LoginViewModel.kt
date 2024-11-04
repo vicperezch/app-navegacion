@@ -8,12 +8,13 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.uvg.app.dataStore
 import com.uvg.app.data.DataStoreUserPrefs
-import com.uvg.app.data.repository.LocalCharacterRepository
+import com.uvg.app.data.local.repository.LocalCharacterRepository
 import com.uvg.app.data.repository.LocalLocationRepository
 import com.uvg.app.di.Dependencies
 import com.uvg.app.domain.CharacterRepository
 import com.uvg.app.domain.LocationRepository
 import com.uvg.app.domain.UserPreferences
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -41,25 +42,8 @@ class LoginViewModel (
 
             _uiState.update { state ->
                 state.copy(
-                    isLoading = true
+                    isSuccessful = true
                 )
-            }
-
-            if (characterRepository.initialSync() && locationRepository.initialSync()) {
-                _uiState.update { state ->
-                    state.copy(
-                        isLoading = false,
-                        isSuccessful = true
-                    )
-                }
-
-            } else {
-                _uiState.update { state ->
-                    state.copy(
-                        isLoading = false,
-                        isSuccessful = true
-                    )
-                }
             }
         }
     }
